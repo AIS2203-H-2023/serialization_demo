@@ -5,9 +5,14 @@
 #include "Person.hpp"
 #include "Person.pb.h"
 
+
 namespace ais2203 {
 
-    Person fromProto(const proto::Person &p) {
+    Person fromProto(const std::string& protoMsg) {
+
+      proto::Person p;
+      p.ParseFromString(protoMsg);
+
         auto &firstName = p.firstname();
         auto &lastName = p.lastname();
         std::optional<int> age;
@@ -16,7 +21,7 @@ namespace ais2203 {
         return {firstName, lastName, age};
     }
 
-    proto::Person toProto(const Person &p) {
+    std::string toProto(const Person &p) {
         proto::Person pp;
         pp.set_firstname(p.getFirstName());
         pp.set_lastname(p.getLastName());
@@ -24,7 +29,8 @@ namespace ais2203 {
         if (age) {
             pp.set_age(*age);
         }
-        return pp;
+
+        return pp.SerializeAsString();
     }
 
 }
